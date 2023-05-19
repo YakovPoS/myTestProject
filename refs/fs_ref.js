@@ -13,7 +13,7 @@ fs.writeFile(path.join(__dirname, 'notes', 'myNotes.txt'), 'Hello world' , err =
     console.log('Файл создан')
 
 })
-fs.appendFile(path.join(__dirname, 'notes', 'mynotes.txt'),'  Propoloskaem Gorlo ZZZ VVV', err => {
+fs.appendFile(path.join(__dirname, 'notes', 'mynotes.txt'),'  additional inf', err => {
     if (err) throw err
     console.log('Файл изменен')
 })

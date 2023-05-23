@@ -5,41 +5,56 @@ const fs = require('fs')
 
 const app = express()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
+app.set("view engine", "ejs")
+app.use(express.static(__dirname + '/views'));
 
 app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname, 'views', 'index.html'))//переход на основную страницу
+    res.render('index.ejs')//переход на основную страницу
 })
 
 app.get('/login',(req,res)=>{
-    res.sendFile(path.join(__dirname, 'views', 'login.html'))// переход на страницу login
+    res.render('login.ejs')// переход на страницу login
+})
+
+app.get('/welcome',(req,res)=>{
+    res.render('welcome.ejs')// переход на страницу welcome
+})
+
+app.get('/error',(req,res)=>{
+    res.render('error.ejs')// переход на страницу error
 })
 
 app.post('/', urlencodedParser, (req,res)=>{
-    const dataName = JSON.stringify(req.body.name)
-    console.log(req.body)
-    const dataPass =(req.body.pass)
-    const dataForFile =  JSON.stringify(req.body)
-    
-    fs.appendFile(path.join(__dirname, 'data', 'someData.json' ), (dataForFile)+ '\n', err=>{
-        if (err) throw err
-        console.log('File changed')
-    })
-    res.redirect('/login')
-})
+        const dataForFile = JSON.stringify(req.body)
+        
+        fs.appendFile(path.join(__dirname, 'someData.txt' ), (dataForFile)+ '\n', err=>{
+            if (err) throw err
+            console.log('File changed')
+        })
+        res.redirect('/login')
+        flag = false
+    }
+)
 
 app.post('/login', urlencodedParser,(req,res)=>{
-    fs.readFile(path.join(__dirname, 'data', 'someData.json' ), 'utf-8', (err,data)=>{
-
+    fs.readFile(path.join(__dirname, 'someData.txt' ), 'utf-8', (err,data)=>{
+        if (err) throw err
         const dataName = JSON.stringify(req.body.nameLog)
         const dataPass = JSON.stringify(req.body.passLog)
-        var verifiableData = data.split(' "')
-        console.log(verifiableData)
+        var verifiableData = data.toString().split(/(?={")/).map(x => JSON.parse(x))
+        let f = true
+        verifiableData.forEach(element => {
+            if (element.name==JSON.parse(dataName) && element.pass==JSON.parse(dataPass)){
+                res.render('welcome.ejs', {data:element})
+                f = false
+                return
+            }
+        })
+        if(f){
+            res.render('error.ejs')
+        }
     })
-    res.redirect('/welcome')
 })
-
-
 
 
 const port = 3000

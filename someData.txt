@@ -1,5 +1,3 @@
 {"name":"Yakov","pass":"123"}
 {"name":"Test","pass":"qwe"}
-{"name":"Artur","pass":"gil"}
-{"name":"Nikita","pass":"963","confirmPass":"963"}
-{"name":"YakovY","pass":"1234","confirmPass":"1234"}
+{"name":"Artur","pass":"321"}
